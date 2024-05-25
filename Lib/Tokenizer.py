@@ -13,10 +13,18 @@ class PlainLine:
             self.__word_counts = None
 
     @staticmethod
+    def check_and_download_punkt():
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
+            nltk.download('punkt')
+
+    @staticmethod
     def tokenize_line(line_st):
         return nltk.word_tokenize(line_st)
 
     def count_words(self):
+        PlainLine.check_and_download_punkt()
         word_counts = Counter()
         with ThreadPoolExecutor() as exe:
             futures = [exe.submit(PlainLine.tokenize_line, line)
