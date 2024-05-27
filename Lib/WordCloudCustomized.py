@@ -41,8 +41,10 @@ class WC:
     def create_wordcloud(self):
         wordcloud = WordCloud(
             width=self.__mask_image.width, height=self.__mask_image.height,
-            background_color='rgb(255, 255, 255,0)', mode='RGBA',
-            mask=self.__mask_array, contour_width=1, contour_color='black',
+            # for SVG this is working:background_color='rgb(255, 255, 255,0)',
+            background_color=None,
+            mode='RGBA',
+            mask=self.__mask_array,
             color_func=ImageColorGenerator(
                 np.array(self.__mask_image))
         ).generate_from_frequencies(self.__word_counts)
@@ -51,9 +53,14 @@ class WC:
 
     def save_wordcloud(self):
         if self.__wc is not None:
+            # Save as SVG
             wordcloud_svg = self.__wc.to_svg(embed_font=True)
-            of = os.path.join(self.__out_folder,"wordcloud.svg")
+            of = os.path.join(self.__out_folder, "wordcloud.svg")
             with open(of, "w") as f:
                 f.write(wordcloud_svg)
+            # Save as PNG
+            png_path = os.path.join(self.__out_folder, "wordcloud.png")
+            image = self.__wc.to_image()
+            image.save(png_path, "PNG")
         else:
             print("Please generate wordcloud first using create_wordcloud.")

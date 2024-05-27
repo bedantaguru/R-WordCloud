@@ -33,7 +33,8 @@ class PlainLine:
                                desc="Processing lines",
                                unit="lines", total=len(self.lines)):
                 words = future.result()
-                word_counts.update(words)
+                words_1l = [w for w in words if len(w) > 1]
+                word_counts.update(words_1l)
 
         self.__word_counts = word_counts
         return self.__word_counts
